@@ -135,6 +135,15 @@ func render(editor_plugin: EditorPlugin, anim_player: AnimationPlayer) -> void:
 				invalid = true
 				icon_type = ""
 
+			if invalid:
+				# may be an object that defaults to null, so try to get the nearest valid node and check if it has the property
+				var nearest_node = get_nearest_valid_node.call(path)
+				for prop in nearest_node.get_property_list():
+					if prop.name == NodePath(property_path).get_concatenated_subnames():
+						icon_type = "KeyValue"
+						invalid = false
+						break
+
 			var property_item = create_item(path_item)
 			property_item.set_editable(0, edittable_items)
 			property_item.set_text(0, property)
